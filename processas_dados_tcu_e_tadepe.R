@@ -36,7 +36,7 @@ obras_gil1 <- read_excel("OBRAS PARALISADAS - Resumo_Versão original atualizada
          data_de_inicio = as.character(data_de_inicio),
          data_de_termino_da_obra = as.character(data_de_termino_da_obra)) %>%
   dplyr::select(municipio, uf, objeto, situacao, valor_investimento_r, data_de_inicio,
-                data_de_termino_da_obra, percentual_realizado) %>%
+                data_de_termino_da_obra, percentual_realizado, orgao) %>%
   mutate(dados = "caixa")
 
 # abas 3, dados do PAC
@@ -51,7 +51,7 @@ obras_gil2 <- read_excel("OBRAS PARALISADAS - Resumo_Versão original atualizada
          data_de_termino_da_obra = data_de_conclusao_revisada,
          valor_investimento_r = total_pac_milhoes_r_valor_do_contrato) %>%
   dplyr::select(municipio, uf, objeto, situacao, valor_investimento_r, data_de_inicio,
-                data_de_termino_da_obra, percentual_realizado) %>%
+                data_de_termino_da_obra, percentual_realizado, orgao) %>%
   mutate(dados = "PAC",
          municipio = gsub("/[A-Z]+", "", municipio),
          municipio = gsub("MUNICIPIO D[A-Z]? ", "", municipio))
@@ -67,7 +67,8 @@ obras_gil3 <- read_excel("OBRAS PARALISADAS - Resumo_Versão original atualizada
          valor_investimento_r = valor_liquidado) %>%
   dplyr::select(municipio, uf, objeto, situacao, valor_investimento_r, data_de_inicio,
                 data_de_termino_da_obra, percentual_realizado ) %>%
-  mutate(dados = "MEC ens Tec",
+  mutate(orgao = NA,
+         dados = "MEC ens Tec",
          municipio = gsub("MUNICIPIO D[A-Z]? ", "", municipio))
 
 
@@ -93,9 +94,10 @@ obras_tdp <- obras_visiveis %>%
          id = data_id) %>%
   mutate(valor_investimento_r = as.numeric(valor_investimento_r),
          percentual_realizado = as.numeric(percentual_realizado)/100,
-         dados = "tadepe") %>%
+         dados = "tadepe",
+         orgao = NA) %>%
   dplyr::select(municipio, uf, objeto, situacao, valor_investimento_r, data_de_inicio,
-                data_de_termino_da_obra, percentual_realizado, dados, id)
+                data_de_termino_da_obra, percentual_realizado, orgao, dados, id)
 
 # junta base do Tá de Pé e TCU
 # corrige uns nomes de municípios

@@ -135,7 +135,7 @@ diagnosis1 %>%
 ## gerando dados para Jéssica
 load("obras_amostra1.RData")
 arquivo_jessica <- obras_amostra1 %>%
-  left_join(datblock, by = "id")
+  left_join(df1, by = "id")
 
 glimpse(arquivo_jessica)
 

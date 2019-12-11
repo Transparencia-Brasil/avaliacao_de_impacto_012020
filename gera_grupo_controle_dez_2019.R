@@ -5,7 +5,7 @@ library(estimatr)
 library(tidyverse)
 library(arm)
 
-setwd("C:/Users/mczfe/Transparencia Brasil/Projetos/Ta de Pe/R/1_blockrand/1_blockrand")
+setwd("C:/Users/coliv/Documents/R-Projects/avaliacao_de_impacto_012020")
 load(file="data_rand_tadepe.RData") ## carrega dat3, data.frame objeto da aleatorização
 nrow(dat3) # 8491 linhas
 
@@ -77,19 +77,23 @@ estimand <- declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
 
 decl_exp <- declare_ra(blocks = df1$blockvar, 
                        prob_each = c(.88,.12),
-                       conditions = c('Treatment', 'Control'))
+                       conditions = c(1, 0))
 
-df1$Z <- block_ra(blocks = df1$blockvar, 
-                       prob_each = c(.88,.12),
-                       conditions = c('Treatment', 'Control'))
+# df1$Z <- block_ra(blocks = df1$blockvar, 
+#                        prob_each = c(.88,.12),
+#                        conditions = c('Treatment', 'Control'))
 
 # obter inverse probability weigths
-df1$IPW <- 1/obtain_condition_probabilities(decl_exp, df1$Z)
 
-assignment <-  declare_assignment( assignment_variable = Z)
+
+assignment <-  declare_assignment( blocks = blockvar,
+                                   prob_each = c(.88,.12),
+                                   conditions = c(1,0),
+                                   assignment_variable = "Z")
 
 df1 <- assignment(df1)
 
+df1$IPW <- 1/obtain_condition_probabilities(decl_exp, df1$Z)
 ## validando, vejo que é um pouco menos eficiente que com block. mas ok.
 
 reveal <- declare_reveal(outcome_variables = Y)
@@ -139,6 +143,8 @@ arquivo_jessica <- obras_amostra1 %>%
 
 glimpse(arquivo_jessica)
 
+arquivo_jessica %>%
+  group_by(Z) %>%
+  summarise(n())
+
 save(arquivo_jessica, file="grupo_controle_dez_2019.RData")
-
-

@@ -1,5 +1,3 @@
-
-
 ## Gera arquivo base, que será usado para criar tratamento e controle
 
 ## carrega bibliotecas relevantes
@@ -13,7 +11,7 @@ library(codesBR)
 library(textclean)
 
 # seta caminho
-setwd("C:/Users/mczfe/Transparencia Brasil/Projetos/Ta de Pe/R/1_blockrand/1_blockrand")
+setwd("C:/Users/coliv/Documents/R-Projects/avaliacao_de_impacto_012020")
 
 # carrega arquivos de códigos do IBGE, e obras do Tá de Pé que devem ser aleatorizadas
 load("sysdata.RDA") # arquivo que vem no pacote codesBR. Fiz um hack para carregar aqui. base codigos
@@ -21,7 +19,6 @@ load("obras_visiveis_e_alertas_recebidos.Rdata") # arquivo do Tá de Pé
 base_codigos <- fread("base_codigos_v1.txt", encoding="UTF-8") # fonte: http://basedosdados.org/dataset/diretorio-municipios-brasileiros/resource/c1deb363-ffba-4b1e-95dc-c5e08311852e
 
 # carrea planilha de obras do TCU. São três abas
-setwd("C:/Users/mczfe/Transparencia Brasil/Projetos/Ta de Pe/R")
 
 # aba 2, dados da Caixa
 obras_gil1 <- read_excel("OBRAS PARALISADAS - Resumo_Versão original atualizada.xlsx", sheet=2) %>%
@@ -54,7 +51,8 @@ obras_gil2 <- read_excel("OBRAS PARALISADAS - Resumo_Versão original atualizada
                 data_de_termino_da_obra, percentual_realizado, orgao) %>%
   mutate(dados = "PAC",
          municipio = gsub("/[A-Z]+", "", municipio),
-         municipio = gsub("MUNICIPIO D[A-Z]? ", "", municipio))
+         municipio = gsub("MUNICIPIO D[A-Z]? ", "", municipio)) %>%
+  filter(orgao != "Ministério da Educação")
 
 # aba 5, dados MEC- Educação Superior
 obras_gil3 <- read_excel("OBRAS PARALISADAS - Resumo_Versão original atualizada.xlsx", sheet=5) %>%
@@ -109,7 +107,7 @@ obras_amostra <- bind_rows(obras_tdp, obras_gil) %>%
 rm(obras_visiveis, obras_tdp)
 
 # total de linhas da base de dados
-nrow(obras_amostra) ## 9.041 obras
+nrow(obras_amostra) ## 8.407 obras
 
 
 # arruma base de códigos do ibge, para fazer join com base de obras
@@ -152,7 +150,7 @@ obras_amostra1 <- obras_amostra1 %>%
   filter(!is.na(cod_ibge1))
 
 # total de obras final
-nrow(obras_amostra1) # 8.989
+nrow(obras_amostra1) # 8.355
 
 # salva arquivo para aleatorizar
 save(obras_amostra1, file="obras_amostra1.RData")
